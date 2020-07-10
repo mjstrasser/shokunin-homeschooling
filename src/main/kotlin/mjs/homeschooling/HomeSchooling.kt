@@ -23,22 +23,13 @@ fun divideTasks(allTasks: List<Task>): Assignment {
 }
 
 fun splitTasks(allTasksDesc: List<Task>, pointsPerChild: Int): Assignment {
-    val childTasks: List<MutableList<Task>> = listOf(mutableListOf(), mutableListOf(), mutableListOf())
+    var childTasks: List<MutableList<Task>> = listOf(mutableListOf(), mutableListOf(), mutableListOf())
 
-    allTasksDesc.zip(oscillatingIndexer(allTasksDesc.size)).forEach { (task, idx) ->
-        childTasks[idx].add(task)
-        if (sumPoints(childTasks[idx]) > pointsPerChild) return NO_ASSIGNMENT
+    allTasksDesc.forEach { task ->
+        childTasks[0].add(task)
+        if (sumPoints(childTasks[0]) > pointsPerChild) return NO_ASSIGNMENT
+        childTasks = childTasks.sortedBy { sumPoints(it) }
     }
 
     return Assignment(true, childTasks[0], childTasks[1], childTasks[2])
-}
-
-fun oscillatingIndexer(count: Int): Iterable<Int> {
-    val base = listOf(
-            0, 1, 2, 2, 1, 0, 0, 1, 2, 2, 1, 0,
-            0, 1, 2, 2, 1, 0, 0, 1, 2, 2, 1, 0,
-            0, 1, 2, 2, 1, 0, 0, 1, 2, 2, 1, 0,
-            0, 1, 2, 2, 1, 0, 0, 1, 2, 2, 1, 0
-    )
-    return base.subList(0, count)
 }
