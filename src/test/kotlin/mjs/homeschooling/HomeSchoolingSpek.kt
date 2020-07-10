@@ -32,5 +32,20 @@ internal object HomeSchoolingSpek : Spek({
         it("works for Karen’s example") {
             assertThat(divideTasks(tasks(5, 4, 1, 2, 7, 8, 3)).canBeSplit).isTrue()
         }
+
+        it ("doesn’t matter what order the tasks are in") {
+            val values = listOf(5, 4, 1, 2, 7, 8, 3)
+            repeat(10) {
+                assertThat(divideTasks(tasks(*values.shuffled().toIntArray())).canBeSplit).isTrue()
+            }
+        }
+
+        it ("works if tasks are split into smaller tasks") {
+            assertThat(divideTasks(tasks(2, 2, 1, 2, 2, 1, 2, 3, 4, 5, 2, 1, 2, 1)).canBeSplit).isTrue()
+        }
+
+        it("may not be able to divide a variation of Karen’s example") {
+            assertThat(divideTasks(tasks(5, 4, 1, 2, 7, 9, 2)).canBeSplit).isFalse()
+        }
     }
 })
