@@ -37,6 +37,11 @@ dependencies {
     testRuntimeOnly(group = "org.spekframework.spek2", name = "spek-runner-junit5", version = spekVersion)
 }
 
+tasks.test {
+    useJUnitPlatform()
+    dependsOn("cleanTest")
+}
+
 application {
     // Define the main class for the application.
     mainClassName = "mjs.homeschooling.AppKt"
