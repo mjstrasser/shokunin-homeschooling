@@ -37,7 +37,7 @@ fun divideTasks(allTasks: List<Task>): Assignment {
     )
 }
 
-fun allocateTasks(assignments: HomeAssignments, tasksDesc: List<Task>, pointsPerChild: Int): HomeAssignments {
+tailrec fun allocateTasks(assignments: HomeAssignments, tasksDesc: List<Task>, pointsPerChild: Int): HomeAssignments {
     if (tasksDesc.isEmpty()) return assignments
 
     val firstHomeTasks = assignments.homeTasks[0].add(tasksDesc[0])
