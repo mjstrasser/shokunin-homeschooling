@@ -9,11 +9,11 @@ data class Assignment(
 
 val NO_ASSIGNMENT = Assignment(false)
 
-data class HomeTasks(val name: String, val tasks: List<Task>)
+data class HomeTasks(val name: String, val tasks: List<Task> = emptyList())
 
 fun HomeTasks.add(task: Task) = HomeTasks(name, tasks + task)
 
-data class HomeAssignments(val homeTasks: List<HomeTasks>)
+data class HomeAssignments(val homeTasks: List<HomeTasks> = listOf(HomeTasks("Kim"), HomeTasks("Shane"), HomeTasks("Drew")))
 
 fun HomeAssignments.reorder() = HomeAssignments(homeTasks.sortedBy { it.tasks.points() })
 
@@ -27,18 +27,9 @@ fun divideTasks(allTasks: List<Task>): Assignment {
     val allTasksDesc = allTasks.sortedByDescending(Task::points)
     if (allTasksDesc.first().points > pointsPerChild) return NO_ASSIGNMENT
 
-//    return splitTasks(allTasksDesc, pointsPerChild)
-
-    val assignments = allocateTasks(
-            HomeAssignments(listOf(
-                    HomeTasks("Kim", emptyList()),
-                    HomeTasks("Shane", emptyList()),
-                    HomeTasks("Drew", emptyList())
-            )),
-            allTasks,
-            pointsPerChild
-    )
+    val assignments = allocateTasks(HomeAssignments(), allTasksDesc, pointsPerChild)
     if (assignments.homeTasks.isEmpty()) return NO_ASSIGNMENT
+
     return Assignment(true,
             assignments.homeTasks[0].tasks,
             assignments.homeTasks[1].tasks,
@@ -46,26 +37,14 @@ fun divideTasks(allTasks: List<Task>): Assignment {
     )
 }
 
-fun splitTasks(allTasksDesc: List<Task>, pointsPerChild: Int): Assignment {
-    var childTasks: List<MutableList<Task>> = listOf(mutableListOf(), mutableListOf(), mutableListOf())
+fun allocateTasks(assignments: HomeAssignments, tasksDesc: List<Task>, pointsPerChild: Int): HomeAssignments {
+    if (tasksDesc.isEmpty()) return assignments
 
-    allTasksDesc.forEach { task ->
-        childTasks[0].add(task)
-        if (childTasks[0].points() > pointsPerChild) return NO_ASSIGNMENT
-        childTasks = childTasks.sortedBy { it.points() }
-    }
-
-    return Assignment(true, childTasks[0], childTasks[1], childTasks[2])
-}
-
-
-fun allocateTasks(assignments: HomeAssignments, tasks: List<Task>, pointsPerChild: Int): HomeAssignments {
-    if (tasks.isEmpty()) return assignments
-    val firstHomeTasks = assignments.homeTasks[0]
+    val firstHomeTasks = assignments.homeTasks[0].add(tasksDesc[0])
     if (firstHomeTasks.tasks.points() > pointsPerChild) return HomeAssignments(emptyList())
+
     val newAssignments = HomeAssignments(listOf(
-            firstHomeTasks.add(tasks[0]),
-            assignments.homeTasks[1], assignments.homeTasks[2]
+            firstHomeTasks, assignments.homeTasks[1], assignments.homeTasks[2]
     )).reorder()
-    return allocateTasks(newAssignments, tasks.drop(1), pointsPerChild)
+    return allocateTasks(newAssignments, tasksDesc.drop(1), pointsPerChild)
 }
