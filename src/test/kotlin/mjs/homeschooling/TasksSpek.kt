@@ -2,11 +2,27 @@ package mjs.homeschooling
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.random.Random
 
 internal object TasksSpek : Spek({
+    describe("parseTask") {
+        it("parses simple tokens") {
+            assertThat(parseTask("A1")).isEqualTo(Task("A", 1))
+            assertThat(parseTask("QY47")).isEqualTo(Task("QY", 47))
+        }
+        it("parses complex tokens that match the pattern") {
+            assertThat(parseTask("Walter-143")).isEqualTo(Task("Walter", 143))
+            assertThat(parseTask("Maths:15")).isEqualTo(Task("Maths", 15))
+        }
+        it("returns null for tokens that cannot be parsed") {
+            assertThat(parseTask("1")).isNull()
+            assertThat(parseTask("Famous15 ")).isNull()
+        }
+    }
+
     describe("nameFor") {
         it("returns tasks names with single letters up to 26") {
             assertThat(nameFor(1)).isEqualTo("A")

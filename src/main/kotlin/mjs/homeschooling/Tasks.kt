@@ -4,6 +4,11 @@ import kotlin.random.Random
 
 data class Task(val name: String, val points: Int)
 
+val TOKEN_REGEX = Regex("(?<name>[A-Za-z_]+)[^\\d]*(?<points>\\d+)")
+fun parseTask(token: String) = TOKEN_REGEX.matchEntire(token)?.run {
+        Task(groups["name"]!!.value, groups["points"]!!.value.toInt())
+}
+
 typealias TaskList = List<Task>
 
 fun TaskList.points() = map(Task::points).sum()

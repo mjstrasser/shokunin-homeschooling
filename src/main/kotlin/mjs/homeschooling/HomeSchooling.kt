@@ -1,23 +1,33 @@
 package mjs.homeschooling
 
-fun assignTasks(allTasks: TaskList): Assignments {
-    if (allTasks.size < 3) return nope("There must be at least 3 tasks")
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.types.int
 
-    val allPoints = allTasks.points()
-    if (allPoints % 3 != 0) return nope("The points are not divisible by 3")
 
-    val pointsPerChild = allPoints / 3
-    val allTasksDesc = allTasks.sortedByDescending(Task::points)
-    if (allTasksDesc.first().points > pointsPerChild)
-        return nope("The largest task is larger than $pointsPerChild points")
+class HomeSchooling : CliktCommand() {
+    val tasks: String? by option("-t", "--tasks",
+            help = "List of tasks to allocate for homeschooling"
+    )
+    val randomTasks: Int? by option("-r", "--random-tasks",
+            help="Randomly create a set of tasks to allocate for homeschooling"
+    ).int()
 
-    return allocateTasks(Assignments(), allTasksDesc, pointsPerChild)
+    override fun run() {
+        echo("Hello")
+    }
 }
 
-tailrec fun allocateTasks(assignments: Assignments, tasksDesc: TaskList, pointsPerChild: Int): Assignments {
-    if (tasksDesc.isEmpty()) return assignments
-    val newAssignments = assignments.assignTask(tasksDesc.first())
-    if (newAssignments.childOneTasks.points() > pointsPerChild)
-        return nope("Tasks cannot be divided into $pointsPerChild points each child")
-    return allocateTasks(newAssignments, tasksDesc.drop(1), pointsPerChild)
+fun main(args: Array<String>) = HomeSchooling().main(args)
+
+fun processTasks(randomTasks: Int?, tasks: String?) {
+    val runTasks = randomTasks?.let {
+        randomTasks(it)
+    } ?: tasks?.let {
+        parseTasks(it)
+    }
+    print(runTasks)
 }
+
+fun parseTasks(tasks: String): TaskList = tasks.split(",")
+        .map { Task(it.take(1), it.drop(1).toInt()) }
