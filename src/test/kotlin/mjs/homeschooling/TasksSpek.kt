@@ -6,7 +6,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.random.Random
 
-internal object TaskSpek : Spek({
+internal object TasksSpek : Spek({
     describe("randomTasks") {
         it("returns a list of tasks") {
             val nTasks = Random.nextInt(26)
