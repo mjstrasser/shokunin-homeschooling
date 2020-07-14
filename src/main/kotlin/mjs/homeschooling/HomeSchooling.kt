@@ -20,10 +20,7 @@ class HomeSchooling : CliktCommand() {
         echo(tasksToAllocate)
     }
 
-    private fun selectTasks() =
-            randomTasks
-                    ?.let { randomTasks(it) }
-                    ?: tasks.map(::parseTask)
+    fun selectTasks() = randomTasks?.let { randomTasks(it) } ?: tasks.map(::parseTask)
 }
 
 fun main(args: Array<String>) = HomeSchooling().main(args)
