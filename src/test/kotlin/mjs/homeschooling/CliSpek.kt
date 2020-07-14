@@ -18,9 +18,9 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).isEqualTo(listOf(Task("A", 1), Task("B", 2), Task("C", 3)))
             }
         }
-        it("throws an exception if manual tasks cannot be parsed") {
+        it("fails on the first manual task that cannot be parsed") {
             assertThat {
-                HomeSchooling().parse(listOf("A1", "B", "C3"))
+                HomeSchooling().parse(listOf("A1", "B", "C3", "D"))
             }.isFailure().hasMessage("'B' does not specify a task")
         }
         it("generates random tasks") {
@@ -37,7 +37,7 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).hasSize(numTasks)
             }
         }
-        it("throws an exception if a number is not specified for random tasks") {
+        it("fails if a number is not specified for random tasks") {
             assertThat {
                 HomeSchooling().parse(listOf("-r", "X"))
             }.isFailure().hasMessage("""Invalid value for "-r": X is not a valid integer""")
@@ -48,7 +48,7 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).hasSize(15)
             }
         }
-        it("throws an exception if an unrecognised option is provided") {
+        it("fails if an unrecognised option is provided") {
             assertThat {
                 HomeSchooling().parse(listOf("-t", "15"))
             }.isFailure().hasMessage("""no such option: "-t".""")
