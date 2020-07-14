@@ -1,8 +1,9 @@
 package mjs.homeschooling
 
 import assertk.assertThat
+import assertk.assertions.hasMessage
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
+import assertk.assertions.isFailure
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.random.Random
@@ -17,9 +18,10 @@ internal object TasksSpek : Spek({
             assertThat(parseTask("Walter-143")).isEqualTo(Task("Walter", 143))
             assertThat(parseTask("Maths:15")).isEqualTo(Task("Maths", 15))
         }
-        it("returns null for tokens that cannot be parsed") {
-            assertThat(parseTask("1")).isNull()
-            assertThat(parseTask("Famous15 ")).isNull()
+        it("throws an exception for a token that cannot be parsed") {
+            assertThat {
+                parseTask("A")
+            }.isFailure().hasMessage("'A' does not specify a task")
         }
     }
 

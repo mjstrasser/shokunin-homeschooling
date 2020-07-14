@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.72"
-
     application
 }
 
@@ -29,9 +31,12 @@ dependencies {
 
     testImplementation(group = "com.willowtreeapps.assertk", name = "assertk-jvm", version = assertkVersion)
 
-    testImplementation(kotlin(module = "reflect", version = kotlinVersion))
     testImplementation(group = "org.spekframework.spek2", name = "spek-dsl-jvm", version = spekVersion)
     testRuntimeOnly(group = "org.spekframework.spek2", name = "spek-runner-junit5", version = spekVersion)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.test {
