@@ -22,6 +22,7 @@ class HomeSchooling : CliktCommand(name = "homeschooling") {
                 help = "Maximum number of points to use in randomly-generated tasks (default 10)"
         ).int().default(10)
     }
+
     private val randomTasks by GenerateOptions().cooccurring()
     private val tasks by argument(name = "TASKS",
             help = "List of tasks to allocate for homeschooling, e.g. A1 B2 C3 D5"
@@ -33,12 +34,12 @@ class HomeSchooling : CliktCommand(name = "homeschooling") {
         echo(explain(assignTasks(allTasks)))
     }
 
-    fun selectTasks(): TaskList {
-        try {
-            return randomTasks?.let { generateTasks(it.taskCount!!, it.maxPoints) } ?: tasks.map(::parseTask)
-        } catch (e: IllegalArgumentException) {
-            throw BadParameterValue(e.message!!, argument(name = "TASKS"))
-        }
+    fun selectTasks() = randomTasks?.let { generateTasks(it.taskCount!!, it.maxPoints) } ?: parseTaskArgs()
+
+    private fun parseTaskArgs() = try {
+        tasks.map(::parseTask)
+    } catch (e: IllegalArgumentException) {
+        throw BadParameterValue(e.message!!, argument(name = "TASKS"))
     }
 
     private fun explain(assignments: Assignments) = if (assignments.canBeAssigned)
