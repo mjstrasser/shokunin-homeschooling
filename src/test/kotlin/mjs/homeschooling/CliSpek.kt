@@ -30,10 +30,24 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).hasSize(numTasks)
             }
         }
+        it("generates random tasks with specified maximum points") {
+            val numTasks = Random.nextInt(15)
+            HomeSchooling().apply {
+                parse(listOf("--random-tasks", numTasks.toString(), "--max-points", Random.nextInt(20).toString()))
+                assertThat(selectTasks()).hasSize(numTasks)
+            }
+        }
         it("recognises -r for generating random tasks") {
             val numTasks = Random.nextInt(15)
             HomeSchooling().apply {
                 parse(listOf("-r", numTasks.toString()))
+                assertThat(selectTasks()).hasSize(numTasks)
+            }
+        }
+        it("recognises -m for specifying maximum task points") {
+            val numTasks = Random.nextInt(15)
+            HomeSchooling().apply {
+                parse(listOf("-r", numTasks.toString(), "-m", Random.nextInt(20).toString()))
                 assertThat(selectTasks()).hasSize(numTasks)
             }
         }

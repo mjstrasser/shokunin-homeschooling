@@ -39,10 +39,10 @@ internal object TasksSpek : Spek({
         }
     }
 
-    describe("randomTasks") {
+    describe("generate random tasks") {
         it("returns a list of tasks") {
             val nTasks = Random.nextInt(1000)
-            assertThat(generateTasks(nTasks).size).isEqualTo(nTasks)
+            assertThat(generateTasks(nTasks, Random.nextInt(20)).size).isEqualTo(nTasks)
         }
         it("returns task names from A to the nth letter up to Z") {
             generateTasks(3).apply {
