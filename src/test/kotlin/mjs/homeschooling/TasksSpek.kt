@@ -21,7 +21,7 @@ internal object TasksSpek : Spek({
         it("throws an exception for a token that cannot be parsed") {
             assertThat {
                 parseTask("A")
-            }.isFailure().hasMessage("'A' does not specify a task")
+            }.isFailure().hasMessage(""""A" does not specify a task""")
         }
     }
 
@@ -42,18 +42,18 @@ internal object TasksSpek : Spek({
     describe("randomTasks") {
         it("returns a list of tasks") {
             val nTasks = Random.nextInt(1000)
-            assertThat(randomTasks(nTasks).size).isEqualTo(nTasks)
+            assertThat(generateTasks(nTasks).size).isEqualTo(nTasks)
         }
         it("returns task names from A to the nth letter up to Z") {
-            randomTasks(3).apply {
+            generateTasks(3).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("C")
             }
-            randomTasks(11).apply {
+            generateTasks(11).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("K")
             }
-            randomTasks(26).apply {
+            generateTasks(26).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("Z")
             }

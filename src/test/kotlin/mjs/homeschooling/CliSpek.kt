@@ -21,7 +21,7 @@ object CliSpek : Spek({
         it("fails on the first manual task that cannot be parsed") {
             assertThat {
                 HomeSchooling().parse(listOf("A1", "B", "C3", "D"))
-            }.isFailure().hasMessage("'B' does not specify a task")
+            }.isFailure().hasMessage("""Invalid value for "TASKS": "B" does not specify a task""")
         }
         it("generates random tasks") {
             val numTasks = Random.nextInt(15)

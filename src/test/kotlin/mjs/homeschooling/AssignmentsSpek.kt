@@ -12,23 +12,23 @@ internal object AssignmentsSpek : Spek({
 
     fun tasks(vararg pts: Int): TaskList = pts.map { Task(nameFor(it), it) }
 
-    fun shouldAssign(tasks: TaskList, pointsPerChild: Int) = assignTasks(tasks).apply {
-        assertThat(canBeAssigned).isTrue()
-        assertThat(childOneTasks.points()).isEqualTo(pointsPerChild)
-        assertThat(childTwoTasks.points()).isEqualTo(pointsPerChild)
-        assertThat(childThreeTasks.points()).isEqualTo(pointsPerChild)
+    fun shouldAssign(tasks: TaskList, pointsPerChild: Int) = assignTasks(tasks).also {
+        assertThat(it.canBeAssigned).isTrue()
+        assertThat(it.childOneTasks.points()).isEqualTo(pointsPerChild)
+        assertThat(it.childTwoTasks.points()).isEqualTo(pointsPerChild)
+        assertThat(it.childThreeTasks.points()).isEqualTo(pointsPerChild)
     }
 
-    fun shouldNotAssign(tasks: TaskList, whyNot: String) = assignTasks(tasks).apply {
-        assertThat(canBeAssigned).isFalse()
-        assertThat(whyNot).isEqualTo(whyNot)
+    fun shouldNotAssign(tasks: TaskList, whyNot: String) = assignTasks(tasks).also {
+        assertThat(it.canBeAssigned).isFalse()
+        assertThat(it.whyNot).isEqualTo(whyNot)
     }
 
     describe("divide tasks between three children") {
 
         it("fewer than three tasks cannot be assigned") {
-            shouldNotAssign(tasks(6), whyNot = "There must be at least 3 tasks")
-            shouldNotAssign(tasks(5, 4), whyNot = "There must be at least 3 tasks")
+            shouldNotAssign(tasks(6), whyNot = "there must be at least 3 tasks")
+            shouldNotAssign(tasks(5, 4), whyNot = "there must be at least 3 tasks")
         }
 
         it("three tasks with the same points each can be assigned") {
@@ -39,11 +39,11 @@ internal object AssignmentsSpek : Spek({
         }
 
         it("total points must be divisible by 3") {
-            shouldNotAssign(tasks(1, 2, 3, 4, 5, 6, 7), whyNot = "The points are not divisible by 3")
+            shouldNotAssign(tasks(1, 2, 3, 4, 5, 6, 7), whyNot = "the total points (28) are not divisible by 3")
         }
 
         it("when largest task is more than one third they cannot be assigned") {
-            shouldNotAssign(tasks(8, 10, 4, 2, 3), whyNot = "The largest task is larger than 9 points")
+            shouldNotAssign(tasks(8, 10, 4, 2, 3), whyNot = "the largest task is larger than 9 points")
         }
 
         it("works for Karen’s example") {
@@ -62,7 +62,8 @@ internal object AssignmentsSpek : Spek({
         }
 
         it("may not be able to divide a variation of Karen’s example") {
-            shouldNotAssign(tasks(5, 4, 1, 2, 7, 9, 2), whyNot = "Tasks cannot be divided into 10 points each child")
+            shouldNotAssign(tasks(5, 4, 1, 2, 7, 9, 2),
+                    whyNot = "the tasks (30 points) cannot be allocated into 10 points each child")
         }
     }
 })

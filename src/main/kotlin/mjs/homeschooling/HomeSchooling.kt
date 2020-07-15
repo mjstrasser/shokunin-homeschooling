@@ -1,5 +1,6 @@
 package mjs.homeschooling
 
+import com.github.ajalt.clikt.core.BadParameterValue
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
@@ -21,7 +22,13 @@ class HomeSchooling : CliktCommand() {
         echo(explain(assignTasks(allTasks)))
     }
 
-    fun selectTasks() = randomTasks?.let { randomTasks(it) } ?: tasks.map(::parseTask)
+    fun selectTasks(): TaskList {
+        try {
+            return randomTasks?.let { generateTasks(it) } ?: tasks.map(::parseTask)
+        } catch (e: IllegalArgumentException) {
+            throw BadParameterValue(e.message!!, argument(name = "TASKS"))
+        }
+    }
 
     private fun explain(assignments: Assignments) = if (assignments.canBeAssigned)
         assignments.run {
