@@ -1,4 +1,6 @@
-# Homeschooling
+# Homeschooling triplets
+
+Allocating homeschooling tasks to triplets Kim, Ash and Lou.
 
 Solution to the ThoughtWorks Australia Shokunin challenge for July 2020.
 
@@ -40,15 +42,41 @@ teacher and ask for a new set of tasks.
 
 ## How to run the solution
 
-Run using the script `go.sh`, for example:
+## Prerequisite
 
-```bash
-# Randomly generate 10 tasks
-./go.sh --random-tasks 10
-# Run the example shown above
-./go.sh A5 B4 C1 D2 E7 F8 G3
-# Read tasks from a file
-./go.sh @example.txt
-```
+Java 8 or later. Without installing Java you can run it in Docker from this directory with:
 
-The script will build the application first if necessary.
+    docker run -i -t -v `pwd`:`pwd` -w `pwd` adoptopenjdk:8-jdk-hotspot /bin/bash
+
+## Script
+
+Run using the script `go.sh`, which will build the application first if necessary.
+
+Running `./go.sh --help` (or with no arguments) shows how to run the app.
+
+## Specify tasks
+
+Specify tasks using space-separated tokens with name and points together. A simple
+example is (Karen’s example tasks):
+
+    ./go.sh A5 B4 C1 D2 E7 F8 G3
+
+You can get fancy with:
+
+    ./go.sh Maths:6 Geography:4 Biology:5 Art:5 Music:7 Physics:3
+
+## Generate random tasks
+
+To generate random tasks, specify the number of tasks and, optionally, the maximum
+number of points for each (default 10):
+
+    ./go.sh --random-tasks 10 --max-points 20
+    ./go.sh -r 8 -m 12
+
+If you specify tasks and --random-tasks, the latter takes precedence.  
+
+## Read arguments from file
+
+You can read arguments from a file:
+
+    ./go.sh @example.txt
