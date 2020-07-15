@@ -14,7 +14,7 @@ fun parseTask(token: String) = TOKEN_REGEX.matchEntire(token)?.run {
 typealias TaskList = List<Task>
 
 fun TaskList.points() = map(Task::points).sum()
-fun TaskList.summary() = map { "$it" }.joinToString(", ")
+fun TaskList.summary() = joinToString(", ") { it.toString() }
 
 tailrec fun nameFor(num: Int, name: String = ""): String =
         if (num == 0) name
