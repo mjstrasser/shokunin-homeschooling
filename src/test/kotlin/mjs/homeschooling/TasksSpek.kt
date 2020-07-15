@@ -15,8 +15,8 @@ internal object TasksSpek : Spek({
             assertThat(parseTask("QY47")).isEqualTo(Task("QY", 47))
         }
         it("parses complex tokens that match the pattern") {
-            assertThat(parseTask("Walter-143")).isEqualTo(Task("Walter", 143))
-            assertThat(parseTask("Maths:15")).isEqualTo(Task("Maths", 15))
+            assertThat(parseTask("Walter-143")).isEqualTo(Task("Walter", 143, "-"))
+            assertThat(parseTask("Maths:15")).isEqualTo(Task("Maths", 15, ":"))
         }
         it("throws an exception for a token that cannot be parsed") {
             assertThat {
