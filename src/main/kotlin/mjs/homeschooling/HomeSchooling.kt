@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.int
+import kotlin.system.measureTimeMillis
 
 
 class HomeSchooling : CliktCommand(name = "homeschooling") {
@@ -31,7 +32,9 @@ class HomeSchooling : CliktCommand(name = "homeschooling") {
     override fun run() {
         val allTasks: TaskList = selectTasks()
         echo("Tasks to assign (${allTasks.points()} points): ${allTasks.summary()}")
-        echo(explain(assignTasks(allTasks)))
+        measureTimeMillis {
+            echo(explain(assignTasks(allTasks)))
+        }.also { echo("Executed in $it milliseconds") }
     }
 
     fun selectTasks() = randomTasks?.let { generateTasks(it.taskCount!!, it.maxPoints) } ?: parseTaskArgs()
