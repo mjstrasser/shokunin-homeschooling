@@ -3,8 +3,8 @@ package mjs.homeschooling
 data class Assignments(
         val canBeAssigned: Boolean = true,
         val childOneTasks: ChildTasks = ChildTasks("Kim"),
-        val childTwoTasks: ChildTasks = ChildTasks("Shane"),
-        val childThreeTasks: ChildTasks = ChildTasks("Drew"),
+        val childTwoTasks: ChildTasks = ChildTasks("Ash"),
+        val childThreeTasks: ChildTasks = ChildTasks("Lou"),
         val whyNot: String = ""
 )
 
