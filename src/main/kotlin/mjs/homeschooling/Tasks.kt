@@ -2,16 +2,19 @@ package mjs.homeschooling
 
 import kotlin.random.Random
 
-data class Task(val name: String, val points: Int)
+data class Task(val name: String, val points: Int) {
+    override fun toString() = "$name$points"
+}
 
 val TOKEN_REGEX = Regex("(?<name>[A-Za-z_]+)[^\\d]*(?<points>\\d+)")
 fun parseTask(token: String) = TOKEN_REGEX.matchEntire(token)?.run {
-        Task(groups["name"]!!.value, groups["points"]!!.value.toInt())
+    Task(groups["name"]!!.value, groups["points"]!!.value.toInt())
 } ?: throw IllegalArgumentException("'$token' does not specify a task")
 
 typealias TaskList = List<Task>
 
 fun TaskList.points() = map(Task::points).sum()
+fun TaskList.summary() = map { "$it" }.joinToString(", ")
 
 tailrec fun nameFor(num: Int, name: String = ""): String =
         if (num == 0) name
