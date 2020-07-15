@@ -30,12 +30,17 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).hasSize(numTasks)
             }
         }
-        it("generates random tasks with specified maximum points") {
+        it("generates random tasks with specified maximum points per task") {
             val numTasks = Random.nextInt(15)
             HomeSchooling().apply {
                 parse(listOf("--random-tasks", numTasks.toString(), "--max-points", Random.nextInt(20).toString()))
                 assertThat(selectTasks()).hasSize(numTasks)
             }
+        }
+        it("fails if --max-points is specified without --random-tasks") {
+            assertThat {
+                HomeSchooling().parse(listOf("--max-points", "20"))
+            }.isFailure().hasMessage("""Missing option "--random-tasks".""")
         }
         it("recognises -r for generating random tasks") {
             val numTasks = Random.nextInt(15)
@@ -51,10 +56,25 @@ object CliSpek : Spek({
                 assertThat(selectTasks()).hasSize(numTasks)
             }
         }
-        it("fails if a number is not specified for random tasks") {
+        it("fails if a non-number is specified for random tasks") {
             assertThat {
                 HomeSchooling().parse(listOf("-r", "X"))
             }.isFailure().hasMessage("""Invalid value for "-r": X is not a valid integer""")
+        }
+        it("fails if a no number is specified for random tasks") {
+            assertThat {
+                HomeSchooling().parse(listOf("-r"))
+            }.isFailure().hasMessage("-r option requires an argument")
+        }
+        it("fails if a non-number is specified for maximum points") {
+            assertThat {
+                HomeSchooling().parse(listOf("-r", "10", "-m", "Q"))
+            }.isFailure().hasMessage("""Invalid value for "-m": Q is not a valid integer""")
+        }
+        it("fails if a no number is specified for maximum points") {
+            assertThat {
+                HomeSchooling().parse(listOf("-m"))
+            }.isFailure().hasMessage("-m option requires an argument")
         }
         it("prefers randomly-generated tasks to individually specified ones") {
             HomeSchooling().apply {
