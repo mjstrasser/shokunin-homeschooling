@@ -15,6 +15,9 @@ import kotlin.system.measureTimeMillis
 
 class HomeSchooling : CliktCommand(name = "homeschooling") {
 
+    /**
+     * [OptionGroup] that ensures `--max-points` is only specified with `--random-tasks`.
+     */
     class GenerateOptions : OptionGroup() {
         val taskCount: Int? by option("-r", "--random-tasks",
                 help = "Randomly generate a set of tasks to allocate for homeschooling instead of a list of tasks"
@@ -37,6 +40,9 @@ class HomeSchooling : CliktCommand(name = "homeschooling") {
         }.also { echo("Executed in $it milliseconds") }
     }
 
+    /**
+     * Generating random tasks takes precedence over specifying tasks.
+     */
     fun selectTasks() = randomTasks?.let { generateTasks(it.taskCount!!, it.maxPoints) } ?: parseTaskArgs()
 
     private fun parseTaskArgs() = try {
@@ -45,22 +51,26 @@ class HomeSchooling : CliktCommand(name = "homeschooling") {
         throw BadParameterValue(e.message!!, argument(name = "TASKS"))
     }
 
-    private fun explain(assignments: Assignments) = if (assignments.canBeAssigned)
-        assignments.run {
-            """The tasks have been assigned as follows:
-            |  ${tasksFor(childOneTasks)}
-            |  ${tasksFor(childTwoTasks)}
-            |  ${tasksFor(childThreeTasks)}
+    private fun explain(assignments: Assignments): String {
+
+        fun points(points: Int) = if (points == 1) "1 point" else "$points points"
+
+        fun tasksFor(childTasks: ChildTasks) =
+                childTasks.name + ": " + childTasks.tasks.joinToString(" + ") {
+                    "Task ${it.name} (${points(it.points)})"
+                } + " = ${childTasks.points()} points"
+
+        return if (assignments.canBeAssigned)
+            assignments.let {
+                """The tasks have been assigned as follows:
+            |  ${tasksFor(it.childOneTasks)}
+            |  ${tasksFor(it.childTwoTasks)}
+            |  ${tasksFor(it.childThreeTasks)}
             """.trimMargin()
-        }
-    else
-        assignments.run { "The tasks could not be assigned because $whyNot" }
-
-    private fun tasksFor(childTasks: ChildTasks) = childTasks.name + ": " +
-            childTasks.tasks.joinToString(" + ") { "Task ${it.name} (${points(it.points)})" } +
-            " = ${childTasks.points()} points"
-
-    private fun points(points: Int) = if (points == 1) "1 point" else "$points points"
+            }
+        else
+            assignments.let { "The tasks could not be assigned because ${it.whyNot}" }
+    }
 }
 
 fun main(args: Array<String>) = HomeSchooling().main(args)
