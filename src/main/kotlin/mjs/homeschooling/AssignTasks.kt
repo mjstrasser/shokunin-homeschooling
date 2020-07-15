@@ -18,6 +18,6 @@ tailrec fun allocateTasks(assignments: Assignments, tasksDesc: TaskList, pointsP
     if (tasksDesc.isEmpty()) return assignments
     val newAssignments = assignments.assignTask(tasksDesc.first())
     if (newAssignments.childOneTasks.points() > pointsPerChild)
-        return nope("the tasks cannot be divided into $pointsPerChild points each child")
+        return nope("the tasks (${3 * pointsPerChild} points) cannot be allocated into $pointsPerChild points each child")
     return allocateTasks(newAssignments, tasksDesc.drop(1), pointsPerChild)
 }
