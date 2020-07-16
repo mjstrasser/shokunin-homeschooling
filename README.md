@@ -1,5 +1,8 @@
 # Homeschooling triplets
 
+> **HOLD THE PHONE!** It doesn’t work yet! There are cases that cannot yet be
+> solved.
+
 Allocating homeschooling tasks to triplets Kim, Ash and Lou.
 
 Solution to the ThoughtWorks Australia Shokunin challenge for July 2020.

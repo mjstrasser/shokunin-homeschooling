@@ -12,6 +12,8 @@ internal object AssignmentsSpek : Spek({
 
     fun tasks(vararg pts: Int): TaskList = pts.map { Task(nameFor(it), it) }
 
+    fun tasksFrom(vararg tasks: String): TaskList = tasks.map { parseTask(it) }
+
     fun shouldAssign(tasks: TaskList, pointsPerChild: Int) = assignTasks(tasks).also {
         assertThat(it.canBeAssigned).isTrue()
         assertThat(it.childOneTasks.points()).isEqualTo(pointsPerChild)
@@ -64,6 +66,10 @@ internal object AssignmentsSpek : Spek({
         it("may not be able to divide a variation of Karen’s example") {
             shouldNotAssign(tasks(5, 4, 1, 2, 7, 9, 2),
                     whyNot = "the tasks (30 points) cannot be allocated into 10 points each child")
+        }
+
+        it("should be able to allocate: A5 B5 C4 D3 E3 F4 G2 H2 I8") {
+            shouldAssign(tasksFrom("A5", "B5", "C4", "D3", "E3", "F4", "G2", "H2", "I8"), pointsPerChild = 12)
         }
     }
 })
