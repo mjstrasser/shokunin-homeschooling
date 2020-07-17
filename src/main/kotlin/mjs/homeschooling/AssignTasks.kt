@@ -10,38 +10,37 @@ fun assignTasks(allTasks: TaskList): Assignments {
     if (allPoints % 3 != 0) return nope("the total points ($allPoints) are not divisible by 3")
 
     val pointsPerChild = allPoints / 3
-    val allTasksDesc = allTasks.sortedByDescending(Task::points)
+    val allTasksDesc = allTasks.sortedDesc()
     if (allTasksDesc.first().points > pointsPerChild)
         return nope("the largest task is larger than $pointsPerChild points")
 
-    return allocateTasks(Assignments(), allTasksDesc, pointsPerChild)
+    val childOne = extractPoints(emptyList(), allTasksDesc, pointsPerChild)
+    val otherKids = allTasksDesc - childOne
+    val childTwo = extractPoints(emptyList(), otherKids, pointsPerChild)
+    val remainder = otherKids - childTwo
+
+    return if (remainder.points() == pointsPerChild)
+        Assignments(true, ChildTasks("Ash", childOne), ChildTasks("Kim", childTwo), ChildTasks("Lou", remainder))
+    else
+        nope("the tasks (${3 * pointsPerChild} points) cannot be allocated into $pointsPerChild points per child")
 }
 
 /**
- * Allocate a task from a [TaskList] in descending order of points to an [Assignments]
- * object and fail if points cannot be divided evenly.
+ * Extract a list of tasks that add to the given points, if possible, from an
+ * input list in descending order of size.
  */
-private tailrec fun allocateTasks(assignments: Assignments, tasksDesc: TaskList, pointsPerChild: Int): Assignments {
-    if (tasksDesc.isEmpty()) return assignments
+tailrec fun extractPoints(dest: TaskList, sourceDesc: TaskList, points: Int): TaskList {
+    if (dest.points() == points) return dest
 
-    val newAssignments = assignments.assignTask(tasksDesc.first())
-    if (newAssignments.childOneTasks.points() > pointsPerChild)
-        return nope("the tasks (${3 * pointsPerChild} points) cannot be allocated into $pointsPerChild points each child")
+    // No more points left to add: return nothing
+    if (sourceDesc.isEmpty()) return emptyList()
 
-    return allocateTasks(newAssignments, tasksDesc.drop(1), pointsPerChild)
-}
-
-/**
- * Assign a [Task] to the child with the fewest points.
- */
-fun Assignments.assignTask(task: Task): Assignments {
-    val sortedChildren = listOf(childOneTasks, childTwoTasks, childThreeTasks)
-            .sortedBy(ChildTasks::points)
-    return Assignments(
-            childOneTasks = sortedChildren[0].add(task),
-            childTwoTasks = sortedChildren[1],
-            childThreeTasks = sortedChildren[2]
-    )
+    return if (sourceDesc.first().points + dest.points() <= points)
+        // Head of list (most points) will fit
+        extractPoints(dest + sourceDesc.take(1), sourceDesc.drop(1), points)
+    else
+        // Try with the tail
+        extractPoints(dest, sourceDesc.drop(1), points)
 }
 
 fun nope(whyNot: String) = Assignments(canBeAssigned = false, whyNot = whyNot)

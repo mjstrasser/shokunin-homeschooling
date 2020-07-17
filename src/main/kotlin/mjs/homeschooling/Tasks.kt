@@ -15,6 +15,10 @@ typealias TaskList = List<Task>
 
 fun TaskList.points() = map(Task::points).sum()
 fun TaskList.summary() = joinToString(", ") { it.toString() }
+fun TaskList.sorted() = sortedBy(Task::points)
+fun TaskList.sortedDesc() = sortedByDescending(Task::points)
+
+fun parseTasks(tasks: String): TaskList = tasks.split(" ").map { parseTask(it) }
 
 tailrec fun nameFor(num: Int, name: String = ""): String =
         if (num == 0) name
