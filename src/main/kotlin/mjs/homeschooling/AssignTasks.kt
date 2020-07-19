@@ -14,13 +14,16 @@ fun assignTasks(allTasks: TaskList): Assignments {
     if (allTasksDesc.first().points > pointsPerChild)
         return nope("the largest task is larger than $pointsPerChild points")
 
-    val childOne = extractPoints(emptyList(), allTasksDesc, pointsPerChild)
-    val otherKids = allTasksDesc - childOne
-    val childTwo = extractPoints(emptyList(), otherKids, pointsPerChild)
-    val remainder = otherKids - childTwo
+    val kidOneTasks = extractPoints(emptyList(), allTasksDesc, pointsPerChild)
 
-    return if (remainder.points() == pointsPerChild)
-        Assignments(true, ChildTasks("Ash", childOne), ChildTasks("Kim", childTwo), ChildTasks("Lou", remainder))
+    /** Kotlin [Iterable.minus] preserves order in the source list */
+    val otherKidsTasks = allTasksDesc - kidOneTasks
+
+    val kidTwoTasks = extractPoints(emptyList(), otherKidsTasks, pointsPerChild)
+    val remainingTasks = otherKidsTasks - kidTwoTasks
+
+    return if (remainingTasks.points() == pointsPerChild)
+        Assignments(true, ChildTasks("Ash", kidOneTasks), ChildTasks("Kim", kidTwoTasks), ChildTasks("Lou", remainingTasks))
     else
         nope("the tasks (${3 * pointsPerChild} points) cannot be allocated into $pointsPerChild points per child")
 }
@@ -36,10 +39,10 @@ tailrec fun extractPoints(dest: TaskList, sourceDesc: TaskList, points: Int): Ta
     if (sourceDesc.isEmpty()) return emptyList()
 
     return if (sourceDesc.first().points + dest.points() <= points)
-        // Head of list (most points) will fit
+    // Head of list (most points) will fit
         extractPoints(dest + sourceDesc.take(1), sourceDesc.drop(1), points)
     else
-        // Try with the tail
+    // Try with the tail
         extractPoints(dest, sourceDesc.drop(1), points)
 }
 

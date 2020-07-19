@@ -14,6 +14,7 @@ import kotlin.random.Random
 internal object AssignmentsSpek : Spek({
 
     fun tasks(vararg pts: Int): TaskList = pts.mapIndexed { idx, i -> Task(nameFor(idx + 1), i) }
+    fun tasks(tasks: String): TaskList = tasks.split(" ").map { parseTask(it) }
 
     fun shouldAssign(tasks: TaskList, pointsPerChild: Int) = assignTasks(tasks).also {
         assertThat(it.canBeAssigned).isTrue()
@@ -25,11 +26,6 @@ internal object AssignmentsSpek : Spek({
     fun shouldNotAssign(tasks: TaskList, whyNot: String) = assignTasks(tasks).also {
         assertThat(it.canBeAssigned).isFalse()
         assertThat(it.whyNot).isEqualTo(whyNot)
-    }
-
-    fun Assert<TaskList>.sameAs(expected: TaskList) = given { actual ->
-        if (actual.sorted() == expected.sorted()) return
-        expected("Task list ${show(expected.sorted())} but was ${show(actual.sorted())}")
     }
 
     describe("divide tasks between three children") {
@@ -73,9 +69,14 @@ internal object AssignmentsSpek : Spek({
 
     describe("extract tasks with a specified number of points") {
 
-        fun shouldExtract(source: String, points: Int, oneThird: String) =
-                assertThat(extractPoints(emptyList(), parseTasks(source), points))
-                        .sameAs(parseTasks(oneThird))
+        fun Assert<TaskList>.sameAs(expected: TaskList) = given { actual ->
+            if (actual.sorted() == expected.sorted()) return
+            expected("Task list ${show(expected.sorted())} but was ${show(actual.sorted())}")
+        }
+
+        fun shouldExtract(source: String, points: Int, extract: String) =
+                assertThat(extractPoints(emptyList(), tasks(source), points))
+                        .sameAs(tasks(extract))
 
         it("finds the first task if has the points") {
             shouldExtract("A5 B4 C3 D2 E1", 5, "A5")

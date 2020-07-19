@@ -45,15 +45,15 @@ internal object TasksSpek : Spek({
             assertThat(generateTasks(nTasks, Random.nextInt(20)).size).isEqualTo(nTasks)
         }
         it("returns task names from A to the nth letter up to Z") {
-            generateTasks(3).apply {
+            generateTasks(3, 20).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("C")
             }
-            generateTasks(11).apply {
+            generateTasks(11, 15).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("K")
             }
-            generateTasks(26).apply {
+            generateTasks(26, 10).apply {
                 assertThat(first().name).isEqualTo("A")
                 assertThat(last().name).isEqualTo("Z")
             }
