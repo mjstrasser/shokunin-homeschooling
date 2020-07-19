@@ -23,7 +23,11 @@ fun assignTasks(allTasks: TaskList): Assignments {
     val remainingTasks = otherKidsTasks - kidTwoTasks
 
     return if (remainingTasks.points() == pointsPerChild)
-        Assignments(true, ChildTasks("Ash", kidOneTasks), ChildTasks("Kim", kidTwoTasks), ChildTasks("Lou", remainingTasks))
+        listOf("Ash", "Kim", "Lou").shuffled().let { randomNames ->
+            Assignments(ChildTasks(randomNames[0], kidOneTasks),
+                    ChildTasks(randomNames[1], kidTwoTasks),
+                    ChildTasks(randomNames[2], remainingTasks))
+        }
     else
         nope("the tasks (${3 * pointsPerChild} points) cannot be allocated into $pointsPerChild points per child")
 }

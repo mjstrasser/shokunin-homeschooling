@@ -1,8 +1,5 @@
 # Homeschooling triplets
 
-> **HOLD THE PHONE!** It doesn’t work yet! There are cases that cannot yet be
-> solved.
-
 Allocating homeschooling tasks to triplets Kim, Ash and Lou.
 
 Solution to the ThoughtWorks Australia Shokunin challenge for July 2020.
@@ -76,7 +73,7 @@ number of points for each (default 10):
     ./go.sh --random-tasks 10 --max-points 20
     ./go.sh -r 8 -m 12
 
-If you specify tasks and --random-tasks, the latter takes precedence.  
+If you specify both explicit tasks and --random-tasks, the latter takes precedence.  
 
 ## Read arguments from file
 
